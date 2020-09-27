@@ -29,30 +29,37 @@ public class Parser {
 
         int argsNum = args.length;
         if (argsNum != Constants.ARG_LIMIT_NO_CONFIG && argsNum != Constants.ARG_LIMIT_CONFIG) {
+            System.out.println("A");
             help();
         }
 
         if (!idParser.populate(args[Constants.ID_KEY], args[Constants.ID_VALUE])) {
+            System.out.println("B");
             help();
         }
 
         if (!hostsParser.populate(args[Constants.HOSTS_KEY], args[Constants.HOSTS_VALUE])) {
+            System.out.println("C");
             help();
         }
 
         if (!hostsParser.inRange(idParser.getId())) {
+            System.out.println("D");
             help();
         }
 
         if (!barrierParser.populate(args[Constants.BARRIER_KEY], args[Constants.BARRIER_VALUE])) {
+            System.out.println("E");
             help();
         }
 
         if (!signalParser.populate(args[Constants.SIGNAL_KEY], args[Constants.SIGNAL_VALUE])) {
+            System.out.println("F");
             help();
         }
 
         if (!outputParser.populate(args[Constants.OUTPUT_KEY], args[Constants.OUTPUT_VALUE])) {
+            System.out.println("G");
             help();
         }
 
@@ -103,5 +110,7 @@ public class Parser {
     public String config() {
         return configParser.getPath();
     }
+
+    public int messages(){ return configParser.getNumberofMessages();}
 
 }

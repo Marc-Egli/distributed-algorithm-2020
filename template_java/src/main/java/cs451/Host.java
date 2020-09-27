@@ -1,15 +1,31 @@
 package cs451;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
+import java.io.IOException;
+import java.net.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Host {
 
     private static final String IP_START_REGEX = "/";
-
     private int id;
     private String ip;
     private int port = -1;
+    private List<Host> hosts;
+    private int messages = -1;
+    private PerfectLink link;
+    public List<String> received = new ArrayList<>();
+
+
+    public boolean init(List<Host> hosts, int messages) {
+        this.hosts = new ArrayList<>(hosts);
+        this.hosts.remove(this);
+        this.messages = messages;
+        this.link = new PerfectLink(port, ip);
+        new Thread(() -> receive()).start();
+        System.out.println(hosts);
+        return true;
+    }
 
     public boolean populate(String idString, String ipString, String portString) {
         try {
@@ -27,6 +43,8 @@ public class Host {
                 System.err.println("Port in the hosts file must be a positive number!");
                 return false;
             }
+
+
         } catch (NumberFormatException e) {
             if (port == -1) {
                 System.err.println("Id in the hosts file must be a number!");
@@ -39,6 +57,33 @@ public class Host {
         }
 
         return true;
+    }
+
+
+    public void start()  {
+        for (Host h : hosts) {
+            try {
+                link.send(String.valueOf(messages), h.getPort(), h.getIp());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void receive() {
+        while (true) {
+            String m = null;
+            try {
+                m = link.receive();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if (m != null) {
+                received.add(this.id + " received " + m);
+                System.out.println(m);
+            }
+        }
+
     }
 
     public int getId() {
