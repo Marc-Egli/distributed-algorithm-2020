@@ -16,4 +16,9 @@ public class ConfigParser {
         return path;
     }
 
+
+    public int getNumberofMessages(){
+        return 1;
+    }
+
 }
