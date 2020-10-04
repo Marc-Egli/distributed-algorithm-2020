@@ -1,9 +1,11 @@
 package cs451;
 
-import java.io.IOException;
+import javax.xml.crypto.Data;
+import java.io.*;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+
 
 
 public class FairlossLink {
@@ -18,18 +20,76 @@ public class FairlossLink {
         }
     }
 
-    public void send(String m, int port, String ip) throws IOException {
-        byte buf[] = m.getBytes();
-        DatagramPacket packet = new DatagramPacket(buf,buf.length,InetAddress.getByName(ip),port);
-        socket.send(packet);
+    public synchronized void send(Message m)  {
+        byte buf[] = serialize(m);
+        try {
+            DatagramPacket packet = new DatagramPacket(buf,buf.length,InetAddress.getByName(m.getDstIp()),m.getDstPort());
+            socket.send(packet);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
 
     }
 
-    public String receive() throws IOException {
+    public void close(){
+        this.socket.close();
+    }
+
+    public Message receive() {
         byte[] receive = new byte[65535];
         DatagramPacket packet = new DatagramPacket(receive,receive.length);
-        socket.receive(packet);
-        return new String(receive);
-
+        try {
+            socket.receive(packet);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return deserialize(packet.getData());
     }
+
+    public byte[] serialize(Message m) {
+        byte[] byteMessage = null;
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        ObjectOutputStream out;
+        try {
+            out = new ObjectOutputStream(bos);
+            out.writeObject(m);
+            out.flush();
+            byteMessage = bos.toByteArray();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                bos.close();
+            } catch (IOException ex) {
+            }
+        }
+        return byteMessage;
+    }
+
+    public Message deserialize(byte[] byteMessage){
+        Message message = null;
+        ByteArrayInputStream bis = new ByteArrayInputStream(byteMessage);
+        ObjectInput in = null;
+        try {
+            in = new ObjectInputStream(bis);
+            message = (Message) in.readObject();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (in != null) {
+                    in.close();
+                }
+            } catch (IOException ex) {
+            }
+        }
+        return message;
+    }
+
+
+
+
 }

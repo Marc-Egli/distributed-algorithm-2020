@@ -18,11 +18,10 @@ public class Host {
 
 
     public boolean init(List<Host> hosts, int messages) {
-        this.hosts = hosts;
-        hosts.remove(this);
+        this.hosts = new ArrayList<>(hosts);
+        this.hosts.remove(this);
         this.messages = messages;
         this.link = new PerfectLink(port, ip);
-        new Thread(() -> receive()).start();
         return true;
     }
 
@@ -61,25 +60,18 @@ public class Host {
 
     public void start()  {
         for (Host h : hosts) {
-            try {
-                link.send(String.valueOf(messages), h.getPort(), h.getIp());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            link.send(String.valueOf(messages), h.getPort(), h.getIp());
         }
     }
 
     public void receive() {
         while (true) {
-            String m = null;
-            try {
-                m = link.receive();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            Message m = link.receive();
             if (m != null) {
                 received.add(this.id + " received " + m);
+                System.out.println(m);
             }
+
         }
 
     }
