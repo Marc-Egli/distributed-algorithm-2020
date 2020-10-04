@@ -18,7 +18,9 @@ public class ConfigParser {
 
 
     public int getNumberofMessages(){
-        return 2;
+
+        return 1;
+
     }
 
 }

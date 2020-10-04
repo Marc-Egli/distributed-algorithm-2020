@@ -1,6 +1,6 @@
 package cs451;
 
-import java.io.IOException;
+
 import java.net.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +22,8 @@ public class Host {
         this.hosts.remove(this);
         this.messages = messages;
         this.link = new PerfectLink(port, ip);
+
+
         return true;
     }
 
@@ -64,17 +66,7 @@ public class Host {
         }
     }
 
-    public void receive() {
-        while (true) {
-            Message m = link.receive();
-            if (m != null) {
-                received.add(this.id + " received " + m);
-                System.out.println(m);
-            }
 
-        }
-
-    }
 
     public int getId() {
         return id;

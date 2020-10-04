@@ -2,6 +2,7 @@ package cs451;
 
 import javax.xml.crypto.Data;
 import java.io.*;
+
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -19,6 +20,7 @@ public class FairlossLink {
             e.printStackTrace();
         }
     }
+
 
     public synchronized void send(Message m)  {
         byte buf[] = serialize(m);

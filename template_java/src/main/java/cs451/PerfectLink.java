@@ -1,6 +1,6 @@
 package cs451;
 
-import java.net.DatagramPacket;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -17,37 +17,37 @@ public class PerfectLink {
     private String linkIp;
 
 
-    public PerfectLink(int port, String ip){
+    public PerfectLink(int port, String ip) {
         this.linkIp = ip;
         this.linkPort = port;
-        this.fairlossLink = new FairlossLink(port,ip);
+        this.fairlossLink = new FairlossLink(port, ip);
         this.delivered = new ArrayList<>();
         this.receiver = new Receiver(fairlossLink);
         receiver.start();
     }
 
-    public void send(String m, int dstPort, String dstIp)  {
-       UUID uid = UUID.randomUUID();
-       Message message = new Message(linkIp,linkPort,dstIp,dstPort,m,BROADCAST,uid);
+    public void send(String m, int dstPort, String dstIp) {
+        UUID uid = UUID.randomUUID();
+        Message message = new Message(linkIp, linkPort, dstIp, dstPort, m, BROADCAST, uid);
 
-       while(true){
-           fairlossLink.send(message);
+        while (true) {
+            fairlossLink.send(message);
 
 
-           Message broadcast = receiver.getReceivedMessage();
-           if(broadcast != null){
-               fairlossLink.send(broadcast.generateAck());
-               System.out.println("Ack sent for " + broadcast.getUid());
-           }
-           Message ack = receiver.getAckMessage();
-           if(ack != null){
-               if(ack.getUid().equals(message.getUid())){
-                   System.out.println("Now breaking from sending");
-                   break;
-               }
-           }
+            Message broadcast = receiver.getReceivedMessage();
+            if (broadcast != null) {
+                fairlossLink.send(broadcast.generateAck());
+                System.out.println("Ack sent for " + broadcast.getUid());
+            }
+            Message ack = receiver.getAckMessage();
+            if (ack != null) {
+                if (ack.getUid().equals(message.getUid())) {
+                    System.out.println("Now breaking from sending");
+                    break;
+                }
+            }
 
-       }
+        }
 
 
     }
@@ -58,10 +58,11 @@ public class PerfectLink {
     }
 
 
-    public void close(){
+    public void close() {
         this.fairlossLink.close();
     }
 
-
-
 }
+
+
+
