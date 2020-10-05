@@ -12,15 +12,15 @@ public class Host {
     private String ip;
     private int port = -1;
     private List<Host> hosts;
-    private int messages = -1;
+    private int numMessages = -1;
     private PerfectLink link;
-    public List<String> received = new ArrayList<>();
+    public List<Message> delivered = new ArrayList<>();
 
 
-    public boolean init(List<Host> hosts, int messages) {
+    public boolean init(List<Host> hosts, int numMessages) {
         this.hosts = new ArrayList<>(hosts);
         this.hosts.remove(this);
-        this.messages = messages;
+        this.numMessages = numMessages;
         this.link = new PerfectLink(port, ip);
 
 
@@ -61,9 +61,12 @@ public class Host {
 
 
     public void start()  {
-        for (Host h : hosts) {
-            link.send(String.valueOf(messages), h.getPort(), h.getIp());
+        for(int i = 1 ; i <= numMessages; i ++) {
+            for (Host h : hosts) {
+                link.send(String.valueOf(i), h.getPort(), h.getIp());
+            }
         }
+
     }
 
 

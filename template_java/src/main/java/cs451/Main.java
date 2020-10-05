@@ -47,20 +47,23 @@ public class Main {
         if (parser.hasConfig()) {
             System.out.println("Config: " + parser.config());
         }
-        Host h = parser.hosts().get(parser.myId() - 1);
+
+
+        Host host = parser.getActiveHost();
+
         Coordinator coordinator = new Coordinator(parser.myId(), parser.barrierIp(), parser.barrierPort(), parser.signalIp(), parser.signalPort());
 
 	    System.out.println("Waiting for all processes for finish initialization");
 
 
-	    h.init(parser.hosts(),parser.messages());
+	    host.init(parser.hosts(),parser.numMessages());
 
 
 	    coordinator.waitOnBarrier();
 
 	    System.out.println("Broadcasting messages...");
 
-	    h.start();
+	    host.start();
 
 
 	    System.out.println("Signaling end of broadcasting messages");

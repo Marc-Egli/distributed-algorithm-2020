@@ -23,9 +23,10 @@ public class Receiver extends Thread{
                 case BROADCAST :
                     if (!receivedBroadcast.contains(m.getUid())) {
                         receivedBroadcast.add(m);
-                        sender.send(m.generateAck());
-                        System.out.println("Received Broadcast " + m.getUid());
                     }
+                    sender.send(m.generateAck());
+                    System.out.println("Received Broadcast " + m.getUid());
+
                     break;
 
                 case ACK:

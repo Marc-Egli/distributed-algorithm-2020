@@ -83,6 +83,18 @@ public class Parser {
         return hostsParser.getHosts();
     }
 
+    public Host getActiveHost(){
+        Host h = null;
+        for(Host host : hosts()){
+            if(host.getId()== myId()){
+                h = host;
+            }
+        }
+        if(h == null) {throw new IllegalStateException("Process has no corresponding host");}
+
+        return h;
+    }
+
     public String barrierIp() {
         return barrierParser.getIp();
     }
@@ -111,6 +123,6 @@ public class Parser {
         return configParser.getPath();
     }
 
-    public int messages(){ return configParser.getNumberofMessages();}
+    public int numMessages(){ return configParser.getFIFOConfig();}
 
 }
