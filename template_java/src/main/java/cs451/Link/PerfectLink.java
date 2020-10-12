@@ -1,5 +1,7 @@
-package cs451;
+package cs451.Link;
 
+
+import cs451.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,23 +10,22 @@ import java.util.UUID;
 import static cs451.MessageType.BROADCAST;
 
 
-public class PerfectLink {
+public class PerfectLink implements Customer {
 
     private FairlossLink fairlossLink;
-    private Receiver receiver;
-    private List<String> delivered;
+    public Receiver receiver;
     private int linkPort;
     private String linkIp;
     private Sender sender;
+    private Customer customer;
 
 
     public PerfectLink(int port, String ip) {
         this.linkIp = ip;
         this.linkPort = port;
         this.fairlossLink = new FairlossLink(port, ip);
-        this.delivered = new ArrayList<>();
         this.sender = new Sender(fairlossLink);
-        this.receiver = new Receiver(sender,fairlossLink);
+        this.receiver = new Receiver(this,sender,fairlossLink);
         receiver.start();
         sender.start();
     }
@@ -37,14 +38,17 @@ public class PerfectLink {
 
     }
 
+    public void deliver(Message message){
+        customer.deliver(message);
+    }
 
-    public Message receive() {
-        return receiver.getReceivedMessage();
+    public void setObserver(Customer customer) {
+        this.customer = customer;
     }
 
 
     public void close() {
-        this.fairlossLink.close();
+        receiver.getAcks();
     }
 
 }

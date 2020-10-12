@@ -1,4 +1,6 @@
-package cs451;
+package cs451.Link;
+
+import cs451.Message;
 
 import javax.xml.crypto.Data;
 import java.io.*;
@@ -13,6 +15,11 @@ public class FairlossLink {
 
     private DatagramSocket socket;
 
+    /**
+     * Low level UDP messaging abstraction
+     * @param port The port the socket is listening to
+     * @param ip The IP of the host the socket is running on
+     */
     public FairlossLink(int port, String ip) {
         try {
             this.socket = new DatagramSocket(port, InetAddress.getByName(ip));
@@ -22,6 +29,10 @@ public class FairlossLink {
     }
 
 
+    /**
+     * Sends UDP DatagramPacket to the destination IP contained in Message
+     * @param m The message to send
+     */
     public synchronized void send(Message m)  {
         byte buf[] = serialize(m);
         try {
@@ -38,6 +49,10 @@ public class FairlossLink {
         this.socket.close();
     }
 
+    /**
+     * Receives UDP DatagramPacket
+     * @return Message
+     */
     public Message receive() {
         byte[] receive = new byte[65535];
         DatagramPacket packet = new DatagramPacket(receive,receive.length);
@@ -49,6 +64,11 @@ public class FairlossLink {
         return deserialize(packet.getData());
     }
 
+    /**
+     * Serializes a Message Object into a byte array
+     * @param m The message to serialize
+     * @return byteMessage
+     */
     public byte[] serialize(Message m) {
         byte[] byteMessage = null;
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -69,6 +89,11 @@ public class FairlossLink {
         return byteMessage;
     }
 
+    /**
+     * Deserializes a byte array into Message Object
+     * @param byteMessage The byteArray to deserialize
+     * @return message
+     */
     public Message deserialize(byte[] byteMessage){
         Message message = null;
         ByteArrayInputStream bis = new ByteArrayInputStream(byteMessage);
@@ -90,8 +115,6 @@ public class FairlossLink {
         }
         return message;
     }
-
-
 
 
 }

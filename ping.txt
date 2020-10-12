@@ -1,0 +1,19 @@
+PING google.com(zrh04s14-in-x0e.1e100.net (2a00:1450:400a:802::200e)) 56 data bytes
+64 bytes from zrh04s14-in-x0e.1e100.net (2a00:1450:400a:802::200e): icmp_seq=1 ttl=116 time=10.5 ms
+64 bytes from zrh04s14-in-x0e.1e100.net (2a00:1450:400a:802::200e): icmp_seq=2 ttl=116 time=10.2 ms
+64 bytes from zrh04s14-in-x0e.1e100.net (2a00:1450:400a:802::200e): icmp_seq=3 ttl=116 time=11.6 ms
+64 bytes from zrh04s14-in-x0e.1e100.net (2a00:1450:400a:802::200e): icmp_seq=4 ttl=116 time=12.0 ms
+64 bytes from zrh04s14-in-x0e.1e100.net (2a00:1450:400a:802::200e): icmp_seq=5 ttl=116 time=13.6 ms
+64 bytes from zrh04s14-in-x0e.1e100.net (2a00:1450:400a:802::200e): icmp_seq=6 ttl=116 time=21.4 ms
+64 bytes from zrh04s14-in-x0e.1e100.net (2a00:1450:400a:802::200e): icmp_seq=7 ttl=116 time=10.5 ms
+64 bytes from zrh04s14-in-x0e.1e100.net (2a00:1450:400a:802::200e): icmp_seq=8 ttl=116 time=10.3 ms
+64 bytes from zrh04s14-in-x0e.1e100.net (2a00:1450:400a:802::200e): icmp_seq=9 ttl=116 time=10.4 ms
+64 bytes from zrh04s14-in-x0e.1e100.net (2a00:1450:400a:802::200e): icmp_seq=10 ttl=116 time=10.6 ms
+64 bytes from zrh04s14-in-x0e.1e100.net (2a00:1450:400a:802::200e): icmp_seq=11 ttl=116 time=11.8 ms
+64 bytes from zrh04s14-in-x0e.1e100.net (2a00:1450:400a:802::200e): icmp_seq=12 ttl=116 time=10.5 ms
+64 bytes from zrh04s14-in-x0e.1e100.net (2a00:1450:400a:802::200e): icmp_seq=13 ttl=116 time=10.4 ms
+64 bytes from zrh04s14-in-x0e.1e100.net (2a00:1450:400a:802::200e): icmp_seq=14 ttl=116 time=10.7 ms
+
+--- google.com ping statistics ---
+14 packets transmitted, 14 received, 0% packet loss, time 13020ms
+rtt min/avg/max/mdev = 10.234/11.754/21.411/2.825 ms

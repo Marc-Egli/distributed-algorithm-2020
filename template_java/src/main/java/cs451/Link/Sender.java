@@ -1,5 +1,8 @@
-package cs451;
+package cs451.Link;
 
+
+import cs451.Link.FairlossLink;
+import cs451.Message;
 
 import java.util.ArrayList;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -13,6 +16,12 @@ public class Sender extends Thread {
     public Sender(FairlossLink fairlossLink){
         this.fairlossLink = fairlossLink;
     }
+
+    /**
+     * Sends all messages on the send queue.
+     * At each iteration removes the ACK from the send queue.
+     * TODO can improve the ACK sending algorithm
+     */
     @Override
     public void run(){
 
@@ -36,7 +45,12 @@ public class Sender extends Thread {
 
      }
 
-
+    /**
+     * Puts a message into the sending queue
+     * Once there, the message will be sent until the sender receives the corresponding
+     * Ack callback, which confirms that the message has been received
+     * @param message
+     */
     public void send(Message message)  {
         try {
             toSend.put(message);
@@ -48,7 +62,6 @@ public class Sender extends Thread {
     /**
      * Notifies the sender that there was an ACK received for one broadcast message
      * It will then remove the concerned message from the send queue
-     *
      * @param ack The ACK corresponding to a broadcast message
      */
     public void notifyAck(Message ack)  {

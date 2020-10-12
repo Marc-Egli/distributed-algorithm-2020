@@ -12,9 +12,17 @@ public class Message implements Serializable {
     private MessageType type;
     private String srcIP,dstIp;
     private int srcPort,dstPort;
+
+
+
     private String content;
     private UUID uid;
-    public Message(String srcIP, int srcPort,String dstIp, int dstPort, String content, MessageType type, UUID uid){
+
+    public int getSrcPort() {
+        return srcPort;
+    }
+
+    public Message(String srcIP, int srcPort, String dstIp, int dstPort, String content, MessageType type, UUID uid){
         this.type = type;
         this.content = content;
         this.srcIP = srcIP;
@@ -25,24 +33,32 @@ public class Message implements Serializable {
     }
 
 
-    public MessageType getType() {
-        return type;
-    }
-
-    public UUID getUid() {
-        return uid;
+    public String getSrcIP() {
+        return srcIP;
     }
 
     public String getDstIp() {
         return dstIp;
     }
 
-    public void setDstIp(String dstIp) {
-        this.dstIp = dstIp;
-    }
-
     public int getDstPort() {
         return dstPort;
+    }
+
+    public MessageType getType() {
+        return type;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public UUID getUid() {
+        return uid;
+    }
+
+    public void setDstIp(String dstIp) {
+        this.dstIp = dstIp;
     }
 
     public void setDstPort(int dstPort) {
@@ -65,7 +81,7 @@ public class Message implements Serializable {
 
     @Override
     public String toString(){
-        return "Message " + uid + " type " + type;
+        return "Message " + uid + " content " + getContent() + " from " + getSrcPort() + "\n";
     }
 
 }
