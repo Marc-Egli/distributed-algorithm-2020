@@ -1,13 +1,18 @@
 package cs451;
 
 
-import cs451.Broadcast.BestEffortBroadcast;
+import cs451.Broadcast.UniformReliableBroadcast;
 import cs451.Link.PerfectLink;
 
+
+
 import java.net.*;
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Host implements Customer {
 
@@ -17,17 +22,19 @@ public class Host implements Customer {
     private int port = -1;
     private List<Host> targetHosts;
     private int numMessages = -1;
+    private static ConcurrentHashMap<Long,String> outputBuffer;
     //This List has to be thread safe has the main thread will constantly check if the messages have arrived and the
     //messanger thread will constantly add new delivered messages to it
     public List<Message> delivered = Collections.synchronizedList(new ArrayList<>());
-    private BestEffortBroadcast bestEffortBroadcast;
+    private UniformReliableBroadcast uniformReliableBroadcast;
 
 
-    public boolean init(List<Host> hosts, int numMessages) {
+    public boolean init(List<Host> hosts, int numMessages,ConcurrentHashMap outputBuffer) {
         this.targetHosts = new ArrayList<>(hosts);
         this.targetHosts.remove(this);
         this.numMessages = numMessages;
-        this.bestEffortBroadcast = new BestEffortBroadcast(this,new PerfectLink(port, ip),targetHosts);
+        this.uniformReliableBroadcast = new UniformReliableBroadcast(this,new PerfectLink(port, ip),this,targetHosts);
+        this.outputBuffer = outputBuffer;
 
 
         return true;
@@ -70,11 +77,14 @@ public class Host implements Customer {
      */
     public void start()  {
         for(int i = 1 ; i <= numMessages; i ++) {
-            bestEffortBroadcast.broadcast(String.valueOf(i));
+            Signature sign = new Signature(this.id,i);
+            Message message = new Message(String.valueOf(i),MessageType.BROADCAST,sign);
+            outputBuffer.put(System.nanoTime(),"b " + this.id);
+            uniformReliableBroadcast.broadcast(message);
         }
 
         while(delivered.size() < numMessages * targetHosts.size()) {}
-        bestEffortBroadcast.close();
+        uniformReliableBroadcast.close();
     }
 
     /**
@@ -84,6 +94,7 @@ public class Host implements Customer {
     @Override
     public void deliver(Message message) {
         delivered.add(message);
+        outputBuffer.put(System.nanoTime(),"d " + message.getSignature().getHostId() + " "+  message.getSignature().getContent());
     }
 
     public int getId() {
@@ -97,6 +108,8 @@ public class Host implements Customer {
     public int getPort() {
         return port;
     }
+
+
 
 
 

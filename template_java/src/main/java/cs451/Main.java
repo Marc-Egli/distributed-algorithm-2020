@@ -4,9 +4,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.Socket;
+import java.sql.Time;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Main {
 
+    public static ConcurrentHashMap<Long,String> outputBuffer = new ConcurrentHashMap<>();
     private static void handleSignal() {
         //immediately stop network packet processing
         System.out.println("Immediately stopping network packet processing.");
@@ -50,13 +53,12 @@ public class Main {
 
 
         Host host = parser.getActiveHost();
-
         Coordinator coordinator = new Coordinator(parser.myId(), parser.barrierIp(), parser.barrierPort(), parser.signalIp(), parser.signalPort());
 
 	    System.out.println("Waiting for all processes for finish initialization");
 
 
-	    host.init(parser.hosts(),parser.numMessages());
+	    host.init(parser.hosts(),parser.numMessages(),outputBuffer);
 
 
 	    coordinator.waitOnBarrier();

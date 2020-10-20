@@ -13,7 +13,7 @@ public class Receiver extends Thread{
 
     private FairlossLink fairlossLink;
     private Customer customer;
-    private List<Message> receivedACKS = new ArrayList<>();
+    private List<UUID> receivedACKS = new ArrayList<>();
     private List<UUID> receivedBroadcast = new ArrayList<>();
     private Sender sender;
 
@@ -37,10 +37,9 @@ public class Receiver extends Thread{
                     break;
 
                 case ACK:
-                    //Not correct if
-                    if(!receivedACKS.contains(m)){
+                    if(!receivedACKS.contains(m.getUid())){
                         System.out.println("Received ACK for " + m.getUid());
-                        receivedACKS.add(m);
+                        receivedACKS.add(m.getUid());
                         sender.notifyAck(m);
                     }
                     break;

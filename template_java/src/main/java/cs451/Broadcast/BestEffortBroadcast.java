@@ -11,9 +11,9 @@ import java.util.List;
 
 
 public class BestEffortBroadcast implements Customer {
-    private List<Host> hosts;
+    private final List<Host> hosts;
     private PerfectLink perfectLink;
-    private Customer customer;
+    private final Customer customer;
 
     public BestEffortBroadcast(Customer customer,PerfectLink perfectLink, List<Host> hosts) {
         this.customer = customer;
@@ -23,10 +23,7 @@ public class BestEffortBroadcast implements Customer {
 
     }
 
-
-
-
-    public void broadcast(String m) {
+    public void broadcast(Message m) {
         for(Host h : hosts){
             perfectLink.send(m,h.getPort(),h.getIp());
         }
@@ -39,8 +36,6 @@ public class BestEffortBroadcast implements Customer {
         customer.deliver(message);
     }
 
-    public void close(){
-        perfectLink.close();
-    }
+
 
 }

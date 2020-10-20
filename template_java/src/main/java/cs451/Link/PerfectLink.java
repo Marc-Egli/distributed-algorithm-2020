@@ -3,12 +3,7 @@ package cs451.Link;
 
 import cs451.*;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
-
-import static cs451.MessageType.BROADCAST;
-
 
 public class PerfectLink implements Customer {
 
@@ -30,9 +25,13 @@ public class PerfectLink implements Customer {
         sender.start();
     }
 
-    public void send(String m, int dstPort, String dstIp) {
+    public void send(Message message, int dstPort, String dstIp) {
         UUID uid = UUID.randomUUID();
-        Message message = new Message(linkIp, linkPort, dstIp, dstPort, m, BROADCAST, uid);
+        message.setDstIp(dstIp);
+        message.setDstPort(dstPort);
+        message.setSrcIP(linkIp);
+        message.setSrcPort(linkPort);
+        message.setUid(uid);
         sender.send(message);
 
 
