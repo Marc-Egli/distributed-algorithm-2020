@@ -1,20 +1,33 @@
 package cs451;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.Socket;
 import java.sql.Time;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class Main {
 
-    public static ConcurrentHashMap<Long,String> outputBuffer = new ConcurrentHashMap<>();
-    private static void handleSignal() {
+    public static ConcurrentLinkedQueue<String> outputBuffer = new ConcurrentLinkedQueue<>();
+    private static void handleSignal()  {
         //immediately stop network packet processing
         System.out.println("Immediately stopping network packet processing.");
         //write/flush output file if necessary
         System.out.println("Writing output.");
+        try {
+            File outputFile = new File(outputBuffer.poll());
+            FileOutputStream fos = new FileOutputStream(outputFile);
+            OutputStreamWriter osw = new OutputStreamWriter(fos);
+            while(outputBuffer.peek() != null){
+                osw.write(outputBuffer.poll());
+            }
+            osw.close();
+            fos.close();
+        }catch(Exception e){
+
+        }
+
+
     }
 
     private static void initSignalHandlers() {
@@ -50,7 +63,7 @@ public class Main {
         if (parser.hasConfig()) {
             System.out.println("Config: " + parser.config());
         }
-
+        outputBuffer.add(parser.output());
 
         Host host = parser.getActiveHost();
         Coordinator coordinator = new Coordinator(parser.myId(), parser.barrierIp(), parser.barrierPort(), parser.signalIp(), parser.signalPort());

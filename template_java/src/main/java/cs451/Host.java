@@ -1,18 +1,13 @@
 package cs451;
 
-
-import cs451.Broadcast.UniformReliableBroadcast;
+import cs451.Broadcast.FifoBroadcast;
 import cs451.Link.PerfectLink;
 
-
-
 import java.net.*;
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class Host implements Customer {
 
@@ -22,18 +17,18 @@ public class Host implements Customer {
     private int port = -1;
     private List<Host> targetHosts;
     private int numMessages = -1;
-    private static ConcurrentHashMap<Long,String> outputBuffer;
+    private static ConcurrentLinkedQueue<String> outputBuffer;
     //This List has to be thread safe has the main thread will constantly check if the messages have arrived and the
     //messanger thread will constantly add new delivered messages to it
     public List<Message> delivered = Collections.synchronizedList(new ArrayList<>());
-    private UniformReliableBroadcast uniformReliableBroadcast;
+    private FifoBroadcast fifoBroadcast;
 
 
-    public boolean init(List<Host> hosts, int numMessages,ConcurrentHashMap outputBuffer) {
+    public boolean init(List<Host> hosts, int numMessages, ConcurrentLinkedQueue outputBuffer) {
         this.targetHosts = new ArrayList<>(hosts);
         this.targetHosts.remove(this);
         this.numMessages = numMessages;
-        this.uniformReliableBroadcast = new UniformReliableBroadcast(this,new PerfectLink(port, ip),this,targetHosts);
+        this.fifoBroadcast = new FifoBroadcast(this,new PerfectLink(port, ip),targetHosts);
         this.outputBuffer = outputBuffer;
 
 
@@ -79,12 +74,12 @@ public class Host implements Customer {
         for(int i = 1 ; i <= numMessages; i ++) {
             Signature sign = new Signature(this.id,i);
             Message message = new Message(String.valueOf(i),MessageType.BROADCAST,sign);
-            outputBuffer.put(System.nanoTime(),"b " + this.id);
-            uniformReliableBroadcast.broadcast(message);
+            outputBuffer.add("b " + this.id);
+            fifoBroadcast.broadcast(message);
         }
 
-        while(delivered.size() < numMessages * targetHosts.size()) {}
-        uniformReliableBroadcast.close();
+        while(delivered.size() < numMessages * targetHosts.size()/2) {}
+        fifoBroadcast.close();
     }
 
     /**
@@ -94,7 +89,7 @@ public class Host implements Customer {
     @Override
     public void deliver(Message message) {
         delivered.add(message);
-        outputBuffer.put(System.nanoTime(),"d " + message.getSignature().getHostId() + " "+  message.getSignature().getContent());
+        outputBuffer.add("d " + message.getSignature().getHostId() + " "+  message.getSignature().getSeq());
     }
 
     public int getId() {

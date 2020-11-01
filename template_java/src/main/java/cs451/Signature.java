@@ -7,17 +7,17 @@ public class Signature {
 
 
     private int hostId;
-    private int content;
+    private int seq;
 
 
-    public Signature(int hostId,int content){
+    public Signature(int hostId,int seq){
         this.hostId = hostId;
-        this.content = content;
+        this.seq = seq;
     }
 
 
-    public int getContent() {
-        return content;
+    public int getSeq() {
+        return seq;
     }
     public int getHostId() {
         return hostId;
@@ -32,11 +32,11 @@ public class Signature {
         if (o == null || getClass() != o.getClass()) return false;
         Signature signature = (Signature) o;
         return hostId == signature.hostId &&
-                content == signature.content;
+                seq == signature.seq;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(hostId, content);
+        return Objects.hash(hostId, seq);
     }
 }

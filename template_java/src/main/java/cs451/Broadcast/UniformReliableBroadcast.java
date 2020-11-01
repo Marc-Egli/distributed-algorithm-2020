@@ -24,7 +24,7 @@ public class UniformReliableBroadcast implements Customer {
 
 
 
-    public UniformReliableBroadcast(Customer customer, PerfectLink perfectLink, Host currentHost, List<Host> otherHosts){
+    public UniformReliableBroadcast( Host currentHost, PerfectLink perfectLink, List<Host> otherHosts,Customer customer){
         beb = new BestEffortBroadcast(this,perfectLink,otherHosts);
         this.forward = new ConcurrentHashMap<>();
         this.ack = new ConcurrentHashMap<>();
@@ -32,7 +32,7 @@ public class UniformReliableBroadcast implements Customer {
         this.perfectLink = perfectLink;
         this.otherHosts = otherHosts;
         this.currentHost = currentHost;
-        this.delivered = new ArrayList<Signature>();
+        this.delivered = new ArrayList<>();
         this.customer = customer;
         this.MIN_MSG = (1 + otherHosts.size() )/ 2;
 
@@ -40,7 +40,7 @@ public class UniformReliableBroadcast implements Customer {
 
     @Override
     public void deliver(Message message) {
-        //TODO get host from ip and port
+        //TODO get host from ip and port instead of only port
         if(!delivered.contains(message.getSignature())) {
             Host sender = LOOKUP.get(message.getSrcPort());
             //Remember that we received this message
@@ -90,7 +90,7 @@ public class UniformReliableBroadcast implements Customer {
         for(Map.Entry<Signature,List<Host>> pending : ack.entrySet()) {
             if(pending.getValue().size() > MIN_MSG){
                 delivered.add(pending.getKey());
-                customer.deliver(new Message(String.valueOf(pending.getKey().getContent()), MessageType.BROADCAST,pending.getKey()));
+                customer.deliver(new Message(String.valueOf(pending.getKey().getSeq()), MessageType.BROADCAST,pending.getKey()));
                 toRemove.add(pending.getKey());
             }
         }

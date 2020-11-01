@@ -22,8 +22,13 @@ public class Message implements Serializable {
     }
 
     private Message(String srcIP,int srcPort,String dstIp,int dstPort,String content, MessageType type,UUID uid, Signature signature){
+        this.srcIP = srcIP;
+        this.srcPort = srcPort;
+        this.dstIp = dstIp;
+        this.dstPort = dstPort;
         this.type = type;
         this.content = content;
+        this.uid = uid;
         this.signature = signature;
     }
 
@@ -102,6 +107,8 @@ public class Message implements Serializable {
     public String toString(){
         return "Message " + uid + " content " + getContent() + " from " + getSrcPort() + "\n";
     }
+
+
 
 
 }
