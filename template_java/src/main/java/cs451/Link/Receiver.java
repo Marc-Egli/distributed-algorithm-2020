@@ -38,7 +38,7 @@ public class Receiver extends Thread{
 
                 case ACK:
                     if(!receivedACKS.contains(m.getUid())){
-                        System.out.println("Received ACK for " + m.getUid());
+                        //System.out.println("Received ACK for " + m.getUid());
                         receivedACKS.add(m.getUid());
                         sender.notifyAck(m);
                     }

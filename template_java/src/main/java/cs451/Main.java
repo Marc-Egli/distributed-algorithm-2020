@@ -20,6 +20,7 @@ public class Main {
             OutputStreamWriter osw = new OutputStreamWriter(fos);
             while(outputBuffer.peek() != null){
                 osw.write(outputBuffer.poll());
+                osw.write("\n");
             }
             osw.close();
             fos.close();

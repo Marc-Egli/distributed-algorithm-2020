@@ -8,7 +8,7 @@ import static cs451.MessageType.ACK;
 public class Message implements Serializable {
 
     private MessageType type;
-    private String srcIP,dstIp;
+    private String srcIp,dstIp;
     private int srcPort,dstPort;
     private final Signature signature;
     private String content;
@@ -21,8 +21,8 @@ public class Message implements Serializable {
         this.signature = signature;
     }
 
-    private Message(String srcIP,int srcPort,String dstIp,int dstPort,String content, MessageType type,UUID uid, Signature signature){
-        this.srcIP = srcIP;
+    private Message(String srcIp,int srcPort,String dstIp,int dstPort,String content, MessageType type,UUID uid, Signature signature){
+        this.srcIp = srcIp;
         this.srcPort = srcPort;
         this.dstIp = dstIp;
         this.dstPort = dstPort;
@@ -36,41 +36,27 @@ public class Message implements Serializable {
         return type;
     }
 
-    public void setType(MessageType type) {
-        this.type = type;
+
+    public String getSrcIp() {
+        return srcIp;
     }
 
-    public String getSrcIP() {
-        return srcIP;
-    }
-
-    public void setSrcIP(String srcIP) {
-        this.srcIP = srcIP;
-    }
 
     public String getDstIp() {
         return dstIp;
     }
 
-    public void setDstIp(String dstIp) {
-        this.dstIp = dstIp;
-    }
+
 
     public int getSrcPort() {
         return srcPort;
     }
 
-    public void setSrcPort(int srcPort) {
-        this.srcPort = srcPort;
-    }
 
     public int getDstPort() {
         return dstPort;
     }
 
-    public void setDstPort(int dstPort) {
-        this.dstPort = dstPort;
-    }
 
     public Signature getSignature() {
         return signature;
@@ -80,9 +66,6 @@ public class Message implements Serializable {
         return content;
     }
 
-    public void setContent(String content) {
-        this.content = content;
-    }
 
     public UUID getUid() {
         return uid;
@@ -98,8 +81,14 @@ public class Message implements Serializable {
         if(this.type == ACK){
             throw new IllegalCallerException("Cannot generate an ACK message from an already ACK type");
         }
-        Message ack = new Message(dstIp,dstPort,srcIP,srcPort,content,ACK,uid,signature);
+        Message ack = new Message(dstIp,dstPort,srcIp,srcPort,content,ACK,uid,signature);
         return ack;
+    }
+
+
+    public Message addIpLayer(int srcPort, String srcIp, int dstPort, String dstIp, UUID uid){
+        return new Message(srcIp,srcPort, dstIp, dstPort, content,  type, uid,  signature);
+
     }
 
 

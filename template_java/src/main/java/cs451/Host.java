@@ -1,8 +1,9 @@
 package cs451;
 
-import cs451.Broadcast.FifoBroadcast;
-import cs451.Link.PerfectLink;
+import cs451.Broadcast.BestEffortBroadcast;
 
+import cs451.Broadcast.UniformReliableBroadcast;
+import cs451.Link.PerfectLink;
 import java.net.*;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -10,7 +11,6 @@ import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class Host implements Customer {
-
     private static final String IP_START_REGEX = "/";
     private int id;
     private String ip;
@@ -21,16 +21,14 @@ public class Host implements Customer {
     //This List has to be thread safe has the main thread will constantly check if the messages have arrived and the
     //messanger thread will constantly add new delivered messages to it
     public List<Message> delivered = Collections.synchronizedList(new ArrayList<>());
-    private FifoBroadcast fifoBroadcast;
+    private UniformReliableBroadcast broadcast;
 
 
     public boolean init(List<Host> hosts, int numMessages, ConcurrentLinkedQueue outputBuffer) {
-        this.targetHosts = new ArrayList<>(hosts);
-        this.targetHosts.remove(this);
         this.numMessages = numMessages;
-        this.fifoBroadcast = new FifoBroadcast(this,new PerfectLink(port, ip),targetHosts);
+        this.broadcast = new UniformReliableBroadcast(this,new PerfectLink(port, ip),hosts,this);
         this.outputBuffer = outputBuffer;
-
+        System.out.println("Host " + id + "has port " + port);
 
         return true;
     }
@@ -64,6 +62,7 @@ public class Host implements Customer {
             e.printStackTrace();
         }
 
+
         return true;
     }
 
@@ -73,13 +72,12 @@ public class Host implements Customer {
     public void start()  {
         for(int i = 1 ; i <= numMessages; i ++) {
             Signature sign = new Signature(this.id,i);
-            Message message = new Message(String.valueOf(i),MessageType.BROADCAST,sign);
-            outputBuffer.add("b " + this.id);
-            fifoBroadcast.broadcast(message);
+            Message model = new Message(String.valueOf(i),MessageType.BROADCAST,sign);
+            outputBuffer.add("b " + i);
+            broadcast.broadcast(model);
         }
 
-        while(delivered.size() < numMessages * targetHosts.size()/2) {}
-        fifoBroadcast.close();
+        while(delivered.size() < numMessages * 2) {}
     }
 
     /**
@@ -102,6 +100,12 @@ public class Host implements Customer {
 
     public int getPort() {
         return port;
+    }
+
+
+    @Override
+    public String toString(){
+        return "Host " + id;
     }
 
 

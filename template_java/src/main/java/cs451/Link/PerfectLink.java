@@ -25,14 +25,15 @@ public class PerfectLink implements Customer {
         sender.start();
     }
 
-    public void send(Message message, int dstPort, String dstIp) {
+    public void send(Message content, int dstPort, String dstIp) {
         UUID uid = UUID.randomUUID();
-        message.setDstIp(dstIp);
-        message.setDstPort(dstPort);
-        message.setSrcIP(linkIp);
-        message.setSrcPort(linkPort);
-        message.setUid(uid);
-        sender.send(message);
+        Message uniqueMessage = content.addIpLayer(linkPort,linkIp,dstPort,dstIp,uid);
+
+        if(linkPort == dstPort && dstIp.equals(linkIp)){
+            new Thread(() -> deliver(uniqueMessage)).start();
+        }else {
+            sender.send(uniqueMessage);
+        }
 
 
     }

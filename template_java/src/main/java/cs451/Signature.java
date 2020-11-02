@@ -1,8 +1,9 @@
 package cs451;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class Signature {
+public class Signature implements Serializable {
 
 
 
@@ -38,5 +39,10 @@ public class Signature {
     @Override
     public int hashCode() {
         return Objects.hash(hostId, seq);
+    }
+
+    @Override
+    public String toString(){
+        return "From host " + hostId + " with Seq " + seq;
     }
 }

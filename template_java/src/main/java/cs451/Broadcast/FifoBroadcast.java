@@ -9,7 +9,9 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.atomic.AtomicIntegerArray;
+
 
 
 public class FifoBroadcast implements Customer {
@@ -19,7 +21,7 @@ public class FifoBroadcast implements Customer {
     private final Host currentHost;
     private final PerfectLink perfectLink;
     private final UniformReliableBroadcast uniformReliableBroadcast;
-    private ConcurrentHashMap<Integer,List<Message>> pending = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<Integer, ConcurrentSkipListSet<Message>> pending = new ConcurrentHashMap<>();
     private AtomicIntegerArray order;
 
     public FifoBroadcast(Host currentHost, PerfectLink perfectLink,List<Host> otherHosts){
@@ -35,22 +37,28 @@ public class FifoBroadcast implements Customer {
     public void broadcast(Message message){
         uniformReliableBroadcast.broadcast(message);
     }
+
+
     @Override
     public void deliver(Message message) {
         int hostId = message.getSignature().getHostId();
         int currentMessage = order.get(hostId-1);
         if(currentMessage == message.getSignature().getSeq() -1 ) {
-            order.getAndIncrement(hostId-1);
+
             currentHost.deliver(message);
-            List<Message> awaiting_messages = pending.get(hostId);
+            order.getAndIncrement(hostId-1);
+            ConcurrentSkipListSet<Message> awaiting_messages = pending.getOrDefault(hostId,new ConcurrentSkipListSet<>(orderComparator));
+
             if(!awaiting_messages.isEmpty()){
-                awaiting_messages.remove(0);
-                deliver(awaiting_messages.get(0));
+                Message next = awaiting_messages.first();
+                if(next.getSignature().getSeq() - 1 == order.get(hostId-1)) {
+                    deliver(awaiting_messages.pollFirst());
+                }
+
             }
         }else{
-            List<Message> tmp = pending.getOrDefault(hostId,new ArrayList<>());
+            ConcurrentSkipListSet<Message> tmp = pending.getOrDefault(hostId,new ConcurrentSkipListSet<>(orderComparator));
             tmp.add(message);
-            tmp.sort(orderComparator);
             pending.put(hostId,tmp);
         }
 

@@ -15,7 +15,7 @@ public class BestEffortBroadcast implements Customer {
     private PerfectLink perfectLink;
     private final Customer customer;
 
-    public BestEffortBroadcast(Customer customer,PerfectLink perfectLink, List<Host> hosts) {
+    public BestEffortBroadcast(PerfectLink perfectLink, List<Host> hosts,Customer customer) {
         this.customer = customer;
         this.perfectLink = perfectLink;
         this.hosts = new ArrayList<>(hosts);
@@ -23,10 +23,11 @@ public class BestEffortBroadcast implements Customer {
 
     }
 
-    public void broadcast(Message m) {
+    public void broadcast(Message model) {
         for(Host h : hosts){
-            perfectLink.send(m,h.getPort(),h.getIp());
+            perfectLink.send(model,h.getPort(),h.getIp());
         }
+
 
     }
 
