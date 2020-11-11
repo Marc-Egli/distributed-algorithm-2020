@@ -1,41 +1,58 @@
 package cs451.Broadcast;
 
 
-import cs451.Customer;
+import cs451.Observer;
 import cs451.Host;
 import cs451.Link.PerfectLink;
-import cs451.Message;
+import cs451.Messages.Message;
 
 import java.util.ArrayList;
 import java.util.List;
 
-
-public class BestEffortBroadcast implements Customer {
+/**
+ * Implementation of best effort broadcast
+ */
+public class BestEffortBroadcast implements Observer {
     private final List<Host> hosts;
-    private PerfectLink perfectLink;
-    private final Customer customer;
+    private final PerfectLink perfectLink;
+    private final Observer observer;
 
-    public BestEffortBroadcast(PerfectLink perfectLink, List<Host> hosts,Customer customer) {
-        this.customer = customer;
+    /**
+     * Creates a best effort broadcast object
+     * @param perfectLink perfect link of the host
+     * @param hosts all kown hosts including itself
+     * @param observer the observer to deliver the messages
+     */
+    public BestEffortBroadcast(PerfectLink perfectLink, List<Host> hosts, Observer observer) {
+        this.observer = observer;
         this.perfectLink = perfectLink;
         this.hosts = new ArrayList<>(hosts);
         perfectLink.setObserver(this);
 
     }
 
+    /**
+     * Broadcasts the message to all hosts
+     * @param model incomplete message with no destination port and ip
+     */
     public void broadcast(Message model) {
-        for(Host h : hosts){
-            perfectLink.send(model,h.getPort(),h.getIp());
+        for (Host h : hosts) {
+            perfectLink.send(model, h.getPort(), h.getIp());
         }
 
 
     }
 
 
+    /**
+     * Delivers message to the observer
+     * @param message The Message to deliver
+     */
     @Override
     public void deliver(Message message) {
-        customer.deliver(message);
+        observer.deliver(message);
     }
+
 
 
 

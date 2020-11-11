@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="317e80fb-264f-4c9b-a52f-e5302ba4a9ac" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/Logs/proc01.stderr" beforeDir="false" afterPath="$PROJECT_DIR$/Logs/proc01.stderr" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logs/proc01.stdout" beforeDir="false" afterPath="$PROJECT_DIR$/Logs/proc01.stdout" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logs/proc02.stderr" beforeDir="false" afterPath="$PROJECT_DIR$/Logs/proc02.stderr" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logs/proc02.stdout" beforeDir="false" afterPath="$PROJECT_DIR$/Logs/proc02.stdout" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logs/proc03.stderr" beforeDir="false" afterPath="$PROJECT_DIR$/Logs/proc03.stderr" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logs/proc03.stdout" beforeDir="false" afterPath="$PROJECT_DIR$/Logs/proc03.stdout" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dummy_config" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/finishedSignal.py" beforeDir="false" afterPath="$PROJECT_DIR$/finishedSignal.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/template_java/hosts" beforeDir="false" afterPath="$PROJECT_DIR$/template_java/hosts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/template_java/output01.out" beforeDir="false" afterPath="$PROJECT_DIR$/template_java/output01.out" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/template_java/output02.out" beforeDir="false" afterPath="$PROJECT_DIR$/template_java/output02.out" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/template_java/src/main/java/cs451/Broadcast/FifoBroadcast.java" beforeDir="false" afterPath="$PROJECT_DIR$/template_java/src/main/java/cs451/Broadcast/FifoBroadcast.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/template_java/src/main/java/cs451/Broadcast/UniformReliableBroadcast.java" beforeDir="false" afterPath="$PROJECT_DIR$/template_java/src/main/java/cs451/Broadcast/UniformReliableBroadcast.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/template_java/src/main/java/cs451/ConfigParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/template_java/src/main/java/cs451/ConfigParser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/template_java/src/main/java/cs451/Host.java" beforeDir="false" afterPath="$PROJECT_DIR$/template_java/src/main/java/cs451/Host.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/template_java/src/main/java/cs451/Link/PerfectLink.java" beforeDir="false" afterPath="$PROJECT_DIR$/template_java/src/main/java/cs451/Link/PerfectLink.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/template_java/src/main/java/cs451/Link/Receiver.java" beforeDir="false" afterPath="$PROJECT_DIR$/template_java/src/main/java/cs451/Link/Receiver.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/template_java/src/main/java/cs451/Link/Sender.java" beforeDir="false" afterPath="$PROJECT_DIR$/template_java/src/main/java/cs451/Link/Sender.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/template_java/src/main/java/cs451/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/template_java/src/main/java/cs451/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/template_java/src/main/java/cs451/Message.java" beforeDir="false" afterPath="$PROJECT_DIR$/template_java/src/main/java/cs451/Message.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/template_java/src/main/java/cs451/Signature.java" beforeDir="false" afterPath="$PROJECT_DIR$/template_java/src/main/java/cs451/Signature.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/validate.py" beforeDir="false" afterPath="$PROJECT_DIR$/validate.py" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CodeStyleSettingsInfer">
+    <option name="done" value="true" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="mavenHome" value="$APPLICATION_HOME_DIR$/plugins/maven/lib/maven3" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
+  <component name="ProjectCodeStyleSettingsMigration">
+    <option name="version" value="1" />
+  </component>
+  <component name="ProjectId" id="1jm904maYuzpGVWx5JMX32Xy4X8" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="android.sdk.path" value="$USER_HOME$/Android/Sdk" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/template_java" />
+    <property name="project.structure.last.edited" value="Project" />
+    <property name="project.structure.proportion" value="0.0" />
+    <property name="project.structure.side.proportion" value="0.0" />
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="317e80fb-264f-4c9b-a52f-e5302ba4a9ac" name="Default Changelist" comment="" />
+      <created>1604398174886</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1604398174886</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="323" y="718" width="424" height="491" key="FileChooserDialogImpl" timestamp="1604398558056">
+      <screen x="0" y="379" width="1080" height="1541" />
+    </state>
+    <state x="323" y="718" width="424" height="491" key="FileChooserDialogImpl/1080.352.2560.1440/0.379.1080.1541@0.379.1080.1541" timestamp="1604398558056" />
+    <state x="23" y="537" width="1024" height="852" key="SettingsEditor" timestamp="1604398553015">
+      <screen x="0" y="379" width="1080" height="1541" />
+    </state>
+    <state x="23" y="537" width="1024" height="852" key="SettingsEditor/1080.352.2560.1440/0.379.1080.1541@0.379.1080.1541" timestamp="1604398553015" />
+  </component>
+</project>

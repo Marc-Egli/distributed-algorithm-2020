@@ -20,6 +20,11 @@ class FinishedSignal:
     def listen(self):
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        self.sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_USER_TIMEOUT, 31)
+        self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1)
+        self.sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_KEEPIDLE, 1) # seconds
+        self.sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_KEEPINTVL, 1) # seconds
+        self.sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_KEEPCNT, 111)
         self.sock.bind((self.host, self.port))
         self.sock.listen(128)
         self.sock.setblocking(False)
@@ -46,20 +51,31 @@ class FinishedSignal:
         self.sel.register(conn, selectors.EVENT_READ, self.read)
 
     def read(self, conn, mask):
-        data = conn.recv(8)
-        if data:
-            pid = struct.unpack('!Q', bytes(data))[0]
-            self.connections[conn] = [pid]
+        try:
+            data = conn.recv(8)
 
-            if self.printer:
-                host, port = conn.getpeername()
-                addr = '{}:{}'.format(host, port)
-                self.printer("Connection from {}, corresponds to PID {}".format(addr, pid))
-        else:
+            print("Received Data Connection {}".format(conn))
+            if data:
+                pid = struct.unpack('!Q', bytes(data))[0]
+                self.connections[conn] = [pid]
+
+                if self.printer:
+                    host, port = conn.getpeername()
+                    addr = '{}:{}'.format(host, port)
+                    self.printer("Connection from {}, corresponds to PID {}, connection object {}".format(addr, pid,conn))
+            else:
+                self.connections[conn].append(int(time.time() * 1000))
+                self.sel.unregister(conn)
+                conn.close()
+                self.waitFor -= 1
+                print("UnregisterConnection {}".format(conn))
+        except:
             self.connections[conn].append(int(time.time() * 1000))
             self.sel.unregister(conn)
             conn.close()
             self.waitFor -= 1
+            print("UnregisterConnection from exception {}".format(conn))
+           
 
 
 
@@ -100,3 +116,4 @@ if __name__ == "__main__":
 
     for pid, endTs in OrderedDict(sorted(signal.endTimestamps().items())).items():
         print("Process {} finished broadcasting at time {} ms from Unix epoch ".format(pid, endTs))
+

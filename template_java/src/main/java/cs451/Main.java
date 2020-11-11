@@ -9,23 +9,25 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class Main {
 
     public static ConcurrentLinkedQueue<String> outputBuffer = new ConcurrentLinkedQueue<>();
-    private static void handleSignal()  {
+
+    private static void handleSignal() {
         //immediately stop network packet processing
         System.out.println("Immediately stopping network packet processing.");
         //write/flush output file if necessary
         System.out.println("Writing output.");
         try {
             File outputFile = new File(outputBuffer.poll());
+            System.out.println(outputFile.toString());
             FileOutputStream fos = new FileOutputStream(outputFile);
             OutputStreamWriter osw = new OutputStreamWriter(fos);
-            while(outputBuffer.peek() != null){
+            while (outputBuffer.peek() != null) {
                 osw.write(outputBuffer.poll());
                 osw.write("\n");
             }
             osw.close();
             fos.close();
-        }catch(Exception e){
-
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
 
@@ -53,7 +55,7 @@ public class Main {
 
         System.out.println("My id is " + parser.myId() + ".");
         System.out.println("List of hosts is:");
-        for (Host host: parser.hosts()) {
+        for (Host host : parser.hosts()) {
             System.out.println(host.getId() + ", " + host.getIp() + ", " + host.getPort());
         }
 
@@ -69,28 +71,27 @@ public class Main {
         Host host = parser.getActiveHost();
         Coordinator coordinator = new Coordinator(parser.myId(), parser.barrierIp(), parser.barrierPort(), parser.signalIp(), parser.signalPort());
 
-	    System.out.println("Waiting for all processes for finish initialization");
+        System.out.println("Waiting for all processes for finish initialization");
 
 
-	    host.init(parser.hosts(),parser.numMessages(),outputBuffer);
+        host.init(parser.hosts(), parser.numMessages(), outputBuffer);
 
 
-	    coordinator.waitOnBarrier();
+        coordinator.waitOnBarrier();
 
-	    System.out.println("Broadcasting messages...");
+        System.out.println("Broadcasting messages...");
 
-	    host.start();
+        host.start();
 
 
-	    System.out.println("Signaling end of broadcasting messages");
         coordinator.finishedBroadcasting();
+        System.err.println("Signaling end of broadcasting messages");
 
 
-
-
-	while (true) {
-	    // Sleep for 1 hour
-	    Thread.sleep(60 * 60 * 1000);
-	}
+        while (true) {
+            // Sleep for 1 hour
+            System.err.println("Now sleeping");
+            Thread.sleep(60 * 60 * 1000);
+        }
     }
 }

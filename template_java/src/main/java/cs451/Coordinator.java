@@ -13,13 +13,13 @@ import java.net.UnknownHostException;
 
 public class Coordinator {
 
-    private int pid;
+    private final int pid;
 
-    private String barrierIp;
-    private int barrierPort;
+    private final String barrierIp;
+    private final int barrierPort;
 
-    private String signalIp;
-    private int signalPort;
+    private final String signalIp;
+    private final int signalPort;
 
     private Socket signalSocket = null;
 
@@ -35,19 +35,20 @@ public class Coordinator {
 
     public void waitOnBarrier() {
         try {
-	    Socket socket = connectToHost(barrierIp, barrierPort);
+            Socket socket = connectToHost(barrierIp, barrierPort);
             InputStream input = socket.getInputStream();
             InputStreamReader reader = new InputStreamReader(input);
             System.out.println("Accessing barrier...");
             int character;
-            while ((character = reader.read()) != -1) {}
+            while ((character = reader.read()) != -1) {
+            }
         } catch (IOException ex) {
             System.out.println("I/O error: " + ex.getMessage());
         }
     }
 
     public void finishedBroadcasting() {
-	try {
+        try {
             signalSocket.close();
         } catch (IOException ex) {
             System.out.println("I/O error: " + ex.getMessage());
@@ -57,7 +58,7 @@ public class Coordinator {
     private Socket connectToHost(String ip, int port) {
         Socket socket = null;
         try {
-	    socket = new Socket(ip, port);
+            socket = new Socket(ip, port);
             OutputStream output = socket.getOutputStream();
             DataOutputStream writer = new DataOutputStream(output);
 

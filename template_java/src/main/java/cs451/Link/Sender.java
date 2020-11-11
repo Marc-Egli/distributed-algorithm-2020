@@ -1,77 +1,149 @@
 package cs451.Link;
 
+import cs451.Messages.Message;
 
-import cs451.Link.FairlossLink;
-import cs451.Message;
-
-import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.LinkedBlockingQueue;
 
+/**
+ * Sender class runs on a separated thread. This allows to constantly send messages to there destinations.
+ */
 public class Sender extends Thread {
 
-    private LinkedBlockingQueue<Message> toSend = new LinkedBlockingQueue<>();
-    private LinkedBlockingQueue<Message> receivedAcks = new LinkedBlockingQueue<>();
-    private FairlossLink fairlossLink;
+    private final int CAPACITY = 100;
+    private final int ACK_SEND = 15;
+    private final FairlossLink fairlossLink;
+    private int counter = 0;
+    //Orders messages by there Signature and then by there UUID
+    private final Comparator<Message> UUIdComparator = new Comparator<Message>() {
+        @Override
+        public int compare(Message message, Message m1) {
+            if (message.getSignature().equals(m1.getSignature())) {
+                return message.getUid().compareTo(m1.getUid());
+            } else {
+                return message.getSignature().compareTo(m1.getSignature());
+            }
+        }
+    };
+    //Buffers to store the pending ACKS and BROADCASTS
+    private final ConcurrentSkipListSet<Message> broadcastBuffer = new ConcurrentSkipListSet<>(UUIdComparator);
+    private final ConcurrentSkipListSet<Message> ackBuffer = new ConcurrentSkipListSet<>(UUIdComparator);
 
-    public Sender(FairlossLink fairlossLink){
+    //The messages to send
+    private final LinkedBlockingQueue<Message> broadcast = new LinkedBlockingQueue<>(CAPACITY);
+    private final HashSet<Message> ack = new HashSet<>(CAPACITY);
+
+    /**
+     * Creates a sender with a fairloss link
+     *
+     * @param fairlossLink a fairloss link
+     */
+    public Sender(FairlossLink fairlossLink) {
         this.fairlossLink = fairlossLink;
     }
 
+
     /**
-     * Sends all messages on the send queue.
-     * At each iteration removes the ACK from the send queue.
-     * TODO can improve the ACK sending algorithm
+     * First checks that we send the maximum of messages.
+     * Then sends all messages in broadcast and ack
+     * The ack messages are only send ACK_SEND times, then the Set is cleared
+     * At each send cycle we also try to reduce the cache size in the fairloss link
      */
     @Override
-    public void run(){
+    public void run() {
 
-        while(true) {
-            while(toSend.isEmpty()){}
-            ArrayList<Message> acks = new ArrayList<>();
-            for(Message message : toSend){
-                switch(message.getType()) {
-                    case BROADCAST:
-                        fairlossLink.send(message);
-                        break;
+        while (true) {
+            //Refill the messages to send
+            fillBroadcast();
+            fillAck();
 
-                    case ACK:
-                        fairlossLink.send(message);
-                        acks.add(message);
-                        break;
-                }
+            //Send all messages in broadcast and ack
+
+            for (Message message : broadcast) {
+                fairlossLink.send(message);
             }
-            toSend.removeAll(acks);
+
+            for (Message message : ack) {
+                fairlossLink.send(message);
+            }
+
+
+            //The ack
+            if (counter == ACK_SEND) {
+                ack.clear();
+                counter = 0;
+            }
+            counter++;
+
+            fairlossLink.reduceCache();
+
+
         }
 
-     }
+    }
 
     /**
-     * Puts a message into the sending queue
-     * Once there, the message will be sent until the sender receives the corresponding
-     * Ack callback, which confirms that the message has been received
-     * @param message
+     * Refills the broadcast messages to be sent from the corresponding buffer
      */
-    public void send(Message message)  {
-        try {
-            toSend.put(message);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+    private void fillBroadcast() {
+        while (broadcast.size() < CAPACITY) {
+            Message m = broadcastBuffer.pollFirst();
+            if (m != null) {
+                broadcast.add(m);
+            } else {
+                break;
+            }
+        }
+    }
+
+    /**
+     * Refills the ack messages to be sent from the corresponding buffer
+     */
+    private void fillAck() {
+        while (ack.size() < CAPACITY) {
+            Message m = ackBuffer.pollFirst();
+            if (m != null) {
+                ack.add(m);
+            } else {
+                break;
+            }
+        }
+    }
+
+
+    /**
+     * Puts a message into the corresponding buffer
+     * Once there, the message will be eventually put onto the corresponding sending list
+     *
+     * @param message The message to send
+     */
+    public void send(Message message) {
+        switch (message.getType()) {
+            case ACK:
+                ackBuffer.add(message);
+                break;
+            case BROADCAST:
+                broadcastBuffer.add(message);
+                break;
         }
     }
 
     /**
      * Notifies the sender that there was an ACK received for one broadcast message
-     * It will then remove the concerned message from the send queue
+     * It will then remove the concerned message from the broadcast queue
+     *
      * @param ack The ACK corresponding to a broadcast message
      */
-    public void notifyAck(Message ack)  {
+    public void notifyAck(Message ack) {
         Message toRemove = null;
-        for(Message message : toSend){
-            if(message.getUid().equals(ack.getUid())){
+        for (Message message : broadcast) {
+            if (message.getUid().equals(ack.getUid())) {
                 toRemove = message;
             }
         }
-        toSend.remove(toRemove);
+        broadcast.remove(toRemove);
 
     }
 }

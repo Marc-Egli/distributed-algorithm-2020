@@ -17,10 +17,10 @@ from enum import Enum
 from collections import defaultdict, OrderedDict
 
 
-BARRIER_IP = 'localhost'
+BARRIER_IP = '127.0.0.1'
 BARRIER_PORT = 10000
 
-SIGNAL_IP = 'localhost'
+SIGNAL_IP = '127.0.0.1'
 SIGNAL_PORT = 11000
 
 PROCESSES_BASE_IP = 11000
@@ -286,8 +286,10 @@ class StressTest:
     def continueStoppedProcesses(self):
         for _, info in self.processesInfo.items():
             with info.lock:
+                print(info.state)
                 if info.state != ProcessState.TERMINATED:
                     if info.state == ProcessState.STOPPED:
+                        print("Sending running signal")
                         info.handle.send_signal(ProcessInfo.stateToSignal(ProcessState.RUNNING))
 
     def run(self):
@@ -340,7 +342,7 @@ def startProcesses(processes, runscript, hostsFilePath, configFilePath, outputDi
 
 def main(processes, messages, runscript, broadcastType, logsDir, testConfig):
     # Set tc for loopback
-    tc = TC(testConfig['TC'])
+    tc = TC(testConfig['TC'], interface="lo", needSudo=True, sudoPassword="einstein")
     print(tc)
 
     # Start the barrier
@@ -352,7 +354,7 @@ def main(processes, messages, runscript, broadcastType, logsDir, testConfig):
     initBarrierThread.start()
 
     # Start the finish signal
-    finishSignal = finishedSignal.FinishedSignal(SIGNAL_IP, SIGNAL_PORT, processes)
+    finishSignal = finishedSignal.FinishedSignal(SIGNAL_IP, SIGNAL_PORT, processes,print)
     finishSignal.listen()
     finishSignalThread = threading.Thread(target=finishSignal.wait)
     finishSignalThread.start()
