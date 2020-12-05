@@ -12,9 +12,8 @@ public class HostsParser {
 
     private static final String HOSTS_KEY = "--hosts";
     private static final String SPACES_REGEX = "\\s+";
-
-    private String filename;
     private final List<Host> hosts = new ArrayList<>();
+    private String filename;
 
     public boolean populate(String key, String filename) {
         if (!key.equals(HOSTS_KEY)) {

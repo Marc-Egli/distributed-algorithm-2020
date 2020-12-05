@@ -4,8 +4,10 @@ import cs451.Messages.Message;
 
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListSet;
-import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * Sender class runs on a separated thread. This allows to constantly send messages to there destinations.
@@ -13,9 +15,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class Sender extends Thread {
 
     private final int CAPACITY = 100;
-    private final int ACK_SEND = 15;
+    private final int ACK_SEND = 1;
     private final FairlossLink fairlossLink;
-    private int counter = 0;
     //Orders messages by there Signature and then by there UUID
     private final Comparator<Message> UUIdComparator = new Comparator<Message>() {
         @Override
@@ -30,10 +31,10 @@ public class Sender extends Thread {
     //Buffers to store the pending ACKS and BROADCASTS
     private final ConcurrentSkipListSet<Message> broadcastBuffer = new ConcurrentSkipListSet<>(UUIdComparator);
     private final ConcurrentSkipListSet<Message> ackBuffer = new ConcurrentSkipListSet<>(UUIdComparator);
-
     //The messages to send
-    private final LinkedBlockingQueue<Message> broadcast = new LinkedBlockingQueue<>(CAPACITY);
+    private final ConcurrentHashMap<UUID, Message> broadcast = new ConcurrentHashMap<>(CAPACITY);
     private final HashSet<Message> ack = new HashSet<>(CAPACITY);
+    private int counter = 0;
 
     /**
      * Creates a sender with a fairloss link
@@ -61,8 +62,8 @@ public class Sender extends Thread {
 
             //Send all messages in broadcast and ack
 
-            for (Message message : broadcast) {
-                fairlossLink.send(message);
+            for (Map.Entry<UUID, Message> entry : broadcast.entrySet()) {
+                fairlossLink.send(entry.getValue());
             }
 
             for (Message message : ack) {
@@ -91,7 +92,7 @@ public class Sender extends Thread {
         while (broadcast.size() < CAPACITY) {
             Message m = broadcastBuffer.pollFirst();
             if (m != null) {
-                broadcast.add(m);
+                broadcast.put(m.getUid(), m);
             } else {
                 break;
             }
@@ -137,13 +138,7 @@ public class Sender extends Thread {
      * @param ack The ACK corresponding to a broadcast message
      */
     public void notifyAck(Message ack) {
-        Message toRemove = null;
-        for (Message message : broadcast) {
-            if (message.getUid().equals(ack.getUid())) {
-                toRemove = message;
-            }
-        }
-        broadcast.remove(toRemove);
+        broadcast.remove(ack.getUid());
 
     }
 }

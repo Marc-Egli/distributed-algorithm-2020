@@ -1,5 +1,9 @@
 package cs451;
 
+import cs451.Broadcast.BroadcastType;
+
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 public class Parser {
@@ -126,7 +130,15 @@ public class Parser {
     }
 
     public int numMessages() {
-        return configParser.getFIFOConfig();
+        return configParser.getNumberOfMessage();
+    }
+
+    public BroadcastType getBroadcastType(){
+        return configParser.broadcastType;
+    }
+
+    public HashMap<Integer, HashSet<Integer>> getCausalDependencies() {
+        return configParser.getCausalDependencies();
     }
 
 }

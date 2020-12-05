@@ -1,12 +1,14 @@
 package cs451;
 
+import cs451.Broadcast.Broadcast;
 import cs451.Broadcast.FifoBroadcast;
 import cs451.Link.PerfectLink;
 import cs451.Messages.Message;
 import cs451.Messages.MessageType;
 import cs451.Messages.Signature;
 
-import java.net.*;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -14,25 +16,23 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class Host implements Observer {
     private static final String IP_START_REGEX = "/";
+    private static ConcurrentLinkedQueue<String> outputBuffer;
+    private final List<Message> own = Collections.synchronizedList(new ArrayList<>());
+    //This List has to be thread safe has the main thread will constantly check if the messages have arrived and the
+    //messenger thread will constantly add new delivered messages to it
+    public List<Message> delivered = Collections.synchronizedList(new ArrayList<>());
     private int id;
     private String ip;
     private int port = -1;
     private int numMessages = -1;
-    private static ConcurrentLinkedQueue<String> outputBuffer;
-    //This List has to be thread safe has the main thread will constantly check if the messages have arrived and the
-    //messanger thread will constantly add new delivered messages to it
-    public List<Message> delivered = Collections.synchronizedList(new ArrayList<>());
-    private final List<Message> own = Collections.synchronizedList(new ArrayList<>());
-    private FifoBroadcast broadcast;
+    private Broadcast broadcast;
 
 
-    public boolean init(List<Host> hosts, int numMessages, ConcurrentLinkedQueue outputBuffer) {
+    public boolean init(int numMessages, Broadcast broadcast, ConcurrentLinkedQueue outputBuffer) {
         this.numMessages = numMessages;
         //You can use UniformReliableBroadcast or Fifo hear also
-        this.broadcast = new FifoBroadcast(new PerfectLink(port, ip), hosts, this);
+        this.broadcast = broadcast;
         this.outputBuffer = outputBuffer;
-        System.out.println("Host " + id + "has port " + port);
-
         return true;
     }
 
@@ -76,8 +76,10 @@ public class Host implements Observer {
         for (int i = 1; i <= numMessages; i++) {
             Signature sign = new Signature(this.id, i);
             Message model = new Message(String.valueOf(i), MessageType.BROADCAST, sign);
-            broadcast.broadcast(model);
             outputBuffer.add("b " + i);
+            broadcast.broadcast(model);
+
+
         }
 
         while (own.size() < numMessages) {
@@ -93,7 +95,6 @@ public class Host implements Observer {
     @Override
     public void deliver(Message message) {
         delivered.add(message);
-        System.err.println("Receiving " + message.getSignature().toString());
         if (message.getSignature().getHostId() == this.id) {
             own.add(message);
         }

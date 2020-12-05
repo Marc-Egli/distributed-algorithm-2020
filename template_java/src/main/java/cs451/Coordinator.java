@@ -1,15 +1,9 @@
 package cs451;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.DataOutputStream;
-import java.net.InetAddress;
+import java.io.*;
+import java.net.Socket;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.net.Socket;
-import java.net.UnknownHostException;
 
 public class Coordinator {
 

@@ -1,10 +1,10 @@
 package cs451.Broadcast;
 
 
-import cs451.Observer;
 import cs451.Host;
 import cs451.Link.PerfectLink;
 import cs451.Messages.Message;
+import cs451.Observer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,16 +12,17 @@ import java.util.List;
 /**
  * Implementation of best effort broadcast
  */
-public class BestEffortBroadcast implements Observer {
+public class BestEffortBroadcast implements Observer,Broadcast {
     private final List<Host> hosts;
     private final PerfectLink perfectLink;
-    private final Observer observer;
+    private Observer observer;
 
     /**
      * Creates a best effort broadcast object
+     *
      * @param perfectLink perfect link of the host
-     * @param hosts all kown hosts including itself
-     * @param observer the observer to deliver the messages
+     * @param hosts       all kown hosts including itself
+     * @param observer    z
      */
     public BestEffortBroadcast(PerfectLink perfectLink, List<Host> hosts, Observer observer) {
         this.observer = observer;
@@ -33,6 +34,7 @@ public class BestEffortBroadcast implements Observer {
 
     /**
      * Broadcasts the message to all hosts
+     *
      * @param model incomplete message with no destination port and ip
      */
     public void broadcast(Message model) {
@@ -46,12 +48,14 @@ public class BestEffortBroadcast implements Observer {
 
     /**
      * Delivers message to the observer
+     *
      * @param message The Message to deliver
      */
     @Override
     public void deliver(Message message) {
         observer.deliver(message);
     }
+
 
 
 

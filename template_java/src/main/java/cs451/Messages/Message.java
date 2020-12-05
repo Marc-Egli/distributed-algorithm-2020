@@ -8,17 +8,18 @@ import static cs451.Messages.MessageType.ACK;
 public class Message implements Serializable {
 
     private final MessageType type;
-    private String srcIp, dstIp;
-    private int srcPort, dstPort;
     private final Signature signature;
     private final String content;
+    private String srcIp, dstIp;
+    private int srcPort, dstPort;
     private UUID uid;
 
 
     /**
      * Constructs a partial message with not Network information
-     * @param content the content of the Message
-     * @param type type of the Message
+     *
+     * @param content   the content of the Message
+     * @param type      type of the Message
      * @param signature signature of the Message
      */
     public Message(String content, MessageType type, Signature signature) {
@@ -29,6 +30,7 @@ public class Message implements Serializable {
 
     /**
      * Constructs a full message
+     *
      * @param srcIp
      * @param srcPort
      * @param dstIp
@@ -56,11 +58,13 @@ public class Message implements Serializable {
         return type;
     }
 
+    public String getSrcIp() {
+        return srcIp;
+    }
 
     public String getDstIp() {
         return dstIp;
     }
-
 
     public int getSrcPort() {
         return srcPort;
@@ -84,6 +88,7 @@ public class Message implements Serializable {
 
     /**
      * Generates an ACK responds from a Broadcast Message
+     *
      * @return
      */
     public Message generateAck() {
@@ -96,11 +101,12 @@ public class Message implements Serializable {
 
     /**
      * Creates a new message from the current message by adding all destination and source information
+     *
      * @param srcPort source port of the sender
-     * @param srcIp source ip of the sender
+     * @param srcIp   source ip of the sender
      * @param dstPort destination port
-     * @param dstIp destination ip
-     * @param uid unique identifier
+     * @param dstIp   destination ip
+     * @param uid     unique identifier
      * @return Message containing all necessary information to be send over thew fairloss link
      */
     public Message addIpLayer(int srcPort, String srcIp, int dstPort, String dstIp, UUID uid) {
@@ -110,6 +116,7 @@ public class Message implements Serializable {
 
     /**
      * String representation of a Message
+     *
      * @return
      */
     @Override

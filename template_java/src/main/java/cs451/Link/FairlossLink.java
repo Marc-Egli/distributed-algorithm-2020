@@ -3,7 +3,6 @@ package cs451.Link;
 import cs451.Messages.Message;
 
 import java.io.*;
-
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -21,8 +20,8 @@ public class FairlossLink {
         }
         return m1.getSignature().compareTo(m2.getSignature());
     };
-    private DatagramSocket socket;
     private final HashMap<Message, byte[]> cache = new HashMap(CACHE_CAPACITY);
+    private DatagramSocket socket;
 
     /**
      * Low level UDP messaging abstraction
@@ -49,12 +48,10 @@ public class FairlossLink {
         if (cache.size() > CACHE_CAPACITY) {
             List<Message> ks = new ArrayList<>(cache.keySet());
             Collections.sort(ks, strictMessageComparator);
-            System.out.println("CLEARED CACHE");
 
             for (int i = 0; i < 100; i++) {
                 cache.remove(ks.get(i));
             }
-            System.out.println(cache.size());
         }
     }
 

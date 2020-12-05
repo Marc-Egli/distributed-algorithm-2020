@@ -1,9 +1,9 @@
 package cs451.Broadcast;
 
-import cs451.Observer;
 import cs451.Host;
 import cs451.Link.PerfectLink;
 import cs451.Messages.Message;
+import cs451.Observer;
 
 import java.util.Comparator;
 import java.util.List;
@@ -14,7 +14,7 @@ import java.util.concurrent.atomic.AtomicIntegerArray;
 /**
  * First-in First-out broadcast implementation
  */
-public class FifoBroadcast implements Observer {
+public class FifoBroadcast implements Observer,Broadcast {
 
     //Compares only the sequence number of the message
     private final Comparator<Message> orderComparator = (Message m1, Message m2) -> Integer.compare(m1.getSignature().getSeq(), m2.getSignature().getSeq());
@@ -25,11 +25,11 @@ public class FifoBroadcast implements Observer {
 
     /**
      * Creates a new Fifo broadcast on top of URB
+     *
      * @param perfectLink perfect link of the host
-     * @param hosts all known hosts including itself
-     * @param observer the observer to deliver the messages
+     * @param hosts       all known hosts including itself
      */
-    public FifoBroadcast(PerfectLink perfectLink, List<Host> hosts, Observer observer) {
+    public FifoBroadcast(PerfectLink perfectLink, List<Host> hosts,Observer observer) {
         this.observer = observer;
         this.uniformReliableBroadcast = new UniformReliableBroadcast(perfectLink, hosts, this);
         this.order = new AtomicIntegerArray(hosts.size());
@@ -38,6 +38,7 @@ public class FifoBroadcast implements Observer {
 
     /**
      * Broadcasts a Message by invoking URB broadcast
+     *
      * @param message the message to broadcast
      */
     public void broadcast(Message message) {
@@ -52,6 +53,7 @@ public class FifoBroadcast implements Observer {
      * and increment the expected sequence number of the corresponding host.Then recursively
      * check if we can deliver messages in pending.
      * If the sequence number is out of order we put the message into pending
+     *
      * @param message
      */
     @Override

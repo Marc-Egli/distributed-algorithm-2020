@@ -1,8 +1,8 @@
 package cs451.Link;
 
 
-import cs451.*;
 import cs451.Messages.Message;
+import cs451.Observer;
 
 import java.util.UUID;
 
@@ -11,11 +11,11 @@ import java.util.UUID;
  */
 public class PerfectLink implements Observer {
 
-    private FairlossLink fairlossLink;
-    public Receiver receiver;
     private final int linkPort;
     private final String linkIp;
     private final Sender sender;
+    public Receiver receiver;
+    private FairlossLink fairlossLink;
     private Observer observer;
 
     /**

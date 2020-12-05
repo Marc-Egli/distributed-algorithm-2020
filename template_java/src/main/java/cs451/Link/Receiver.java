@@ -1,11 +1,12 @@
 package cs451.Link;
 
-import cs451.Observer;
 import cs451.Messages.Message;
+import cs451.Observer;
 
 import java.util.HashSet;
 import java.util.UUID;
-import java.util.concurrent.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Receiver class runs on a separated thread. Therefore it can continuously work on receiving messages.
@@ -15,21 +16,23 @@ import java.util.concurrent.*;
 public class Receiver extends Thread {
 
     private final FairlossLink fairlossLink;
-    private Observer observer;
     private final HashSet<UUID> receivedACKS = new HashSet<>();
     private final HashSet<UUID> receivedBroadcast = new HashSet<>();
     private final Sender sender;
-    private final ThreadPoolExecutor executor;
+    private final ExecutorService executor;
+    private Observer observer;
 
     /**
      * Constructs a receiver
-     * @param sender sender of the perfect link
+     *
+     * @param sender       sender of the perfect link
      * @param fairlosslink underlying fairloss link
      */
     public Receiver(Sender sender, FairlossLink fairlosslink) {
         this.sender = sender;
         this.fairlossLink = fairlosslink;
-        this.executor = new ThreadPoolExecutor(2, 8, 1, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(100));
+        //Using only 1 thread because of concurrency error in URB
+        this.executor = Executors.newFixedThreadPool(1);
     }
 
 
@@ -55,7 +58,6 @@ public class Receiver extends Thread {
 
                 case ACK:
                     if (!receivedACKS.contains(m.getUid())) {
-                        //System.out.println("Received ACK for " + m.getUid());
                         receivedACKS.add(m.getUid());
                         sender.notifyAck(m);
                     }
@@ -68,6 +70,7 @@ public class Receiver extends Thread {
 
     /**
      * Adds an unique observer to the receiver
+     *
      * @param observer
      */
     public void setObserver(Observer observer) {

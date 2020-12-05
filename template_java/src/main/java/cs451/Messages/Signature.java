@@ -10,11 +10,13 @@ public class Signature implements Serializable, Comparable<Signature> {
 
     private final int hostId;
     private final int seq;
+    private int[] vectorClock;
 
     /**
      * Constructs a new immuable Signature
+     *
      * @param hostId id of host
-     * @param seq sequence number of the message
+     * @param seq    sequence number of the message
      */
     public Signature(int hostId, int seq) {
         this.hostId = hostId;
@@ -30,6 +32,13 @@ public class Signature implements Serializable, Comparable<Signature> {
         return hostId;
     }
 
+    public void setVectorClock(int[] vectorClock){
+        this.vectorClock = vectorClock;
+    }
+
+    public int[] getVectorClock(){
+        return this.vectorClock;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -47,7 +56,13 @@ public class Signature implements Serializable, Comparable<Signature> {
 
     @Override
     public String toString() {
-        return "(H " + hostId + ", Seq " + seq + ")";
+        String vect = "";
+        if(vectorClock != null){
+            for(int i = 0; i < vectorClock.length; i++){
+                vect += vectorClock[i] + ",";
+            }
+        }
+        return "(H " + hostId + ", Seq " + seq + ", Vector : " + vect+")";
     }
 
     @Override

@@ -1,9 +1,12 @@
 package cs451;
 
-import java.io.*;
-import java.net.Socket;
-import java.sql.Time;
-import java.util.concurrent.ConcurrentHashMap;
+import cs451.Broadcast.CausalBroadcast;
+import cs451.Broadcast.FifoBroadcast;
+import cs451.Link.PerfectLink;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class Main {
@@ -73,8 +76,19 @@ public class Main {
 
         System.out.println("Waiting for all processes for finish initialization");
 
+        int numberOfMessages = parser.numMessages();
+        PerfectLink perfectLink = new PerfectLink(host.getPort(), host.getIp());
+        switch (parser.getBroadcastType())  {
 
-        host.init(parser.hosts(), parser.numMessages(), outputBuffer);
+            case Fifo:
+                FifoBroadcast fifoBroadcast = new FifoBroadcast(perfectLink,parser.hosts(),host);
+                host.init(numberOfMessages,fifoBroadcast,outputBuffer);
+                break;
+            case Causal:
+                CausalBroadcast causalBroadcast = new CausalBroadcast(perfectLink,parser.hosts(),host.getId(),parser.getCausalDependencies(),host);
+                host.init(numberOfMessages,causalBroadcast,outputBuffer);
+        }
+
 
 
         coordinator.waitOnBarrier();
