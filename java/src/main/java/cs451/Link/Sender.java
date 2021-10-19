@@ -10,14 +10,14 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListSet;
 
 /**
- * Sender class runs on a separated thread. This allows to constantly send messages to there destinations.
+ * Sender class runs on a separated thread. This allows to constantly send messages to their destinations.
  */
 public class Sender extends Thread {
 
     private final int CAPACITY = 100;
     private final int ACK_SEND = 1;
     private final FairlossLink fairlossLink;
-    //Orders messages by there Signature and then by there UUID
+    //Orders messages by their Signature and then by their UUID
     private final Comparator<Message> UUIdComparator = new Comparator<Message>() {
         @Override
         public int compare(Message message, Message m1) {
