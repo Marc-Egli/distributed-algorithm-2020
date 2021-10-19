@@ -36,37 +36,8 @@ Inter-process point-to-point messages (at the low level) must be carried exclusi
 The application messages (i.e., those broadcast by processes) are numbered sequentially at each process, starting from `1`. Thus, each process broadcasts messages `1` to `m`. By default, the payload carried by an application message is only the sequence number of that message.
 
 ## Template structure
-We provide you a template for both C/C++ and Java, which you should use in your project. The template has a certain structure that is explained below:
+We provide you a template for Java, which you should use in your project. The template has a certain structure that is explained below:
 
-### For C/C++:
-```bash
-.
-├── bin
-│   ├── deploy
-│   │   └── README
-│   ├── logs
-│   │   └── README
-│   └── README
-├── build.sh
-├── cleanup.sh
-├── CMakeLists.txt
-├── run.sh
-└── src
-    ├── CMakeLists.txt
-    └── ...
-```
-You can run:
-  - `build.sh` to compile your project
-  - `run.sh <arguments>` to run your project
-  - `cleanup.sh` to delete the build artifacts. We recommend running this command when submitting your project for evaluation.
-
-You should place your source code under the `src` directory. You are not allowed to edit any files outside the `src` directory. Furthermore, you are not allowed to edit sections of `src/CMakeLists.txt` that are marked as "DO NOT EDIT". Apart from these restrictions, you are completely free on how to structure the source code inside `src`.
-
-The template already includes some source code under `src`, that will help you with parsing the arguments provided to the executable (see below).
-
-Finally, **your executable should not create/use directories named "deploy" and/or "logs"** in the current working directory. These directories are reserved for evaluation!
-
-### For Java:
 ```sh
 .
 ├── bin
